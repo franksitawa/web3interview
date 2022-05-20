@@ -15,8 +15,9 @@
                 $scope.collections=[]
                 $scope.smallParkingFee=60
                 $scope.largeParkingFee=100
-                $scope.SMALL_CAR='Small Car'; 
-                $scope.LARGE_CAR='Large Car';   
+                $scope.SMALL_CAR='SMALL_CAR'; 
+                $scope.LARGE_CAR='LARGE_CAR';  
+                $scope.errors=[] 
                 $scope.parkingSlots = [
                 
                 ];
@@ -24,23 +25,66 @@
                 //Initializes Large parkings
                 for (let i = 1; i < 6; i++) {
                     $scope.parkingSlots.push({
-                        name:i+'',
+                        name:i,
                         hasCar:false,
                         carType:'',
                         parkingStartTime:0
                     })
                 }
                 //Initializes Small parkings
-                for (let i = 5; i < 16; i++) {
+                for (let i = 6; i < 16; i++) {
                     $scope.parkingSlots.push({
-                        name:i+'',
+                        name:i,
                         hasCar:false,
                         onlySmallCars:true,
                         carType:'',
                         parkingStartTime:0
                     })
                 }
+                $scope.checkoutParking=(i)=>{
+                    let index=parseInt(i)-1
+                    if(!($scope.parkingSlots[index]&&$scope.parkingSlots[index].hasCar)){
+                        $scope.errors.push("You cannot checkout an empty parking")
+                        return
+                    }
 
+                    let time=new Date().getMilliseconds()-$scope.parkingSlots[index].parkingStartTime
+                    let min = Math.floor((time/1000/60))
+                    if($scope.parkingSlots[index].onlySmallCars){
+                        $scope.checkOutCharge=$scope.smallParkingFee
+                    }else{
+                        $scope.checkOutCharge=$scope.largeParkingFee
+                    }
+                    
+                    if(min>30){
+                        let hours=Math.floor((min-30)/60)
+                        $scope.checkOutCharge=  $scope.checkOutCharge+(hours*15) 
+                    }
+                    $scope.parkingSlots[index].hasCar=false;
+                    $scope.parkingSlots[index].carType='';
+                    $scope.parkingSlots[index].parkingStartTime=0;
+                }
+                $scope.parkCar=()=>{
+                    $scope.checkOutCharge=0
+                    $scope.errors=[]
+
+                    if(!($scope.parkingSlot&&$scope.carType)){
+                        $scope.errors.push("Please Select all fields")
+                        return
+                    }
+                    parkingSlot=parseInt($scope.parkingSlot)-1
+                    if($scope.parkingSlots[parkingSlot].onlySmallCars&&($scope.carType==$scope.LARGE_CAR)){
+                        $scope.errors.push("Slot can only accomodate small cars")
+                    }else if(!$scope.parkingSlots[parkingSlot].hasCar){
+                        $scope.parkingSlots[parkingSlot].hasCar=true
+                        $scope.parkingSlots[parkingSlot].carType=$scope.carType
+                        $scope.carType=""
+                        $scope.parkingSlot=""
+                        $scope.parkingStartTime=new Date().getMilliseconds()
+                    }else{
+                        $scope.errors.push("Slot Booked, Please choose another slot")
+                    }   
+                }
                 
             });
         </script>
@@ -73,15 +117,19 @@
             <br>
 
             <br>
-            <button ng-click="parkCar()">PARK CAR</button>
+            <button class="btn btn-default" ng-click="parkCar()">PARK CAR</button>
+            <div ng-repeat="error in errors">{{error}}</div>
           </form>
         <table class="table table-bordered">
-            <thead>Cars Parking</thead>
+            <thead>Checkout Charge= {{checkOutCharge}}</thead>
             <tbody>
                 <tr ng-repeat="parking in parkingSlots">
                     <td >
-                        <button type="button" class="btn btn-primary" ng-click="">Parking {{parking.name}}</button>
-                        ({{parking.onlySmallCars?'Small Cars Only':'Large and Small Cars'}})
+                        <button type="button" class="btn btn-primary" ng-click="checkoutParking(parking.name)">Parking {{parking.name}}</button>
+                        <div>({{parking.onlySmallCars?'Small Cars Only':'Large and Small Cars'}})</div>
+                        <div>({{parking.hasCar?'Booked':'Empty'}})</div>
+                        
+                        
                     </td>
                     
                 </tr>
