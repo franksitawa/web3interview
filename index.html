@@ -5,9 +5,34 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
         <title>
             Parking Management System
         </title>
+        <script>
+            var app = angular.module('ParkingApp', []);
+            app.controller('parkingCtrl', function($scope) {
+                $scope.largeParkings = [
+                    
+                ];
+                $scope.smallParkings = [
+
+                ];
+
+                //Initializes Large parkings
+                for (let i = 1; i < 6; i++) {
+                    $scope.largeParkings.push({
+                        name:i+''
+                    })
+                }
+                //Initializes Small parkings
+                for (let i = 1; i < 11; i++) {
+                    $scope.smallParkings.push({
+                        name:i+''
+                    })
+                }
+            });
+        </script>
         <style>
             .center {
                 margin: auto;
@@ -17,26 +42,31 @@
                 }
         </style>
     </head>
-<body>
+<body ng-app="ParkingApp" ng-controller="parkingCtrl">
     <div class="center">
         <h2>Parking Management System</h2>
         <table class="table table-bordered">
-        
+            <thead>Large Cars Parking</thead>
             <tbody>
-              <tr colspan="5">
-                <td>1</td>
-                <td>Anna</td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Debbie</td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>John</td>
-              </tr>
+                <tr>
+                    <td ng-repeat="parking in largeParkings">
+                        <button type="button" class="btn btn-primary">Parking {{parking.name}}</button>
+                    </td>
+                    
+                </tr>
             </tbody>
-          </table>
+        </table>
+        <table class="table table-bordered">
+            <thead>Small Cars Parking</thead>
+            <tbody>
+                <tr>
+                    <td ng-repeat="parking in smallParkings">
+                        <button type="button" class="btn btn-primary">Parking {{parking.name}}</button>
+                    </td>
+                    
+                </tr>
+            </tbody>
+        </table>
     </div>
     
 
