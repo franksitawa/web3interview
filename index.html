@@ -12,31 +12,42 @@
         <script>
             var app = angular.module('ParkingApp', []);
             app.controller('parkingCtrl', function($scope) {
-                $scope.largeParkings = [
-                    
-                ];
-                $scope.smallParkings = [
-
+                $scope.collections=[]
+                $scope.smallParkingFee=60
+                $scope.largeParkingFee=100
+                $scope.SMALL_CAR='Small Car'; 
+                $scope.LARGE_CAR='Large Car';   
+                $scope.parkingSlots = [
+                
                 ];
 
                 //Initializes Large parkings
                 for (let i = 1; i < 6; i++) {
-                    $scope.largeParkings.push({
-                        name:i+''
+                    $scope.parkingSlots.push({
+                        name:i+'',
+                        hasCar:false,
+                        carType:'',
+                        parkingStartTime:0
                     })
                 }
                 //Initializes Small parkings
-                for (let i = 1; i < 11; i++) {
-                    $scope.smallParkings.push({
-                        name:i+''
+                for (let i = 5; i < 16; i++) {
+                    $scope.parkingSlots.push({
+                        name:i+'',
+                        hasCar:false,
+                        onlySmallCars:true,
+                        carType:'',
+                        parkingStartTime:0
                     })
                 }
+
+                
             });
         </script>
         <style>
             .center {
                 margin: auto;
-                width: 50%;
+                width: 90%;
                 border: 1px solid gray;
                 padding: 10px;
                 }
@@ -45,28 +56,38 @@
 <body ng-app="ParkingApp" ng-controller="parkingCtrl">
     <div class="center">
         <h2>Parking Management System</h2>
+        <form novalidate>
+            
+            Parking Slot:<br>
+            <select ng-model="parkingSlot">
+                <option value="">
+                <option  ng-repeat="slot in parkingSlots" value="{{slot.name}}">{{slot.name}} - {{slot.onlySmallCars?'Small Cars Only':'Large and Small Cars'}}
+              </select>
+            <br>
+            Car Type:<br>
+            <select ng-model="carType">
+                <option value="">
+                <option  value="SMALL_CAR">Small Car
+                    <option  value="LARGE_CAR">Large Car
+              </select>
+            <br>
+
+            <br>
+            <button ng-click="parkCar()">PARK CAR</button>
+          </form>
         <table class="table table-bordered">
-            <thead>Large Cars Parking</thead>
+            <thead>Cars Parking</thead>
             <tbody>
-                <tr>
-                    <td ng-repeat="parking in largeParkings">
-                        <button type="button" class="btn btn-primary">Parking {{parking.name}}</button>
+                <tr ng-repeat="parking in parkingSlots">
+                    <td >
+                        <button type="button" class="btn btn-primary" ng-click="">Parking {{parking.name}}</button>
+                        ({{parking.onlySmallCars?'Small Cars Only':'Large and Small Cars'}})
                     </td>
                     
                 </tr>
             </tbody>
         </table>
-        <table class="table table-bordered">
-            <thead>Small Cars Parking</thead>
-            <tbody>
-                <tr>
-                    <td ng-repeat="parking in smallParkings">
-                        <button type="button" class="btn btn-primary">Parking {{parking.name}}</button>
-                    </td>
-                    
-                </tr>
-            </tbody>
-        </table>
+        
     </div>
     
 
